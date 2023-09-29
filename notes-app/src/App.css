@@ -1,3 +1,4 @@
+/* margin to stop the App from touching the edges of the browser window */
 body {
   margin: 20px;
   background-color: lightgrey;
@@ -7,6 +8,7 @@ body {
   grid-template-columns: 1fr;
 }
 
+/* media query that  for screens bigger than 600px use two-column layout */
 @media (min-width: 600px) {
   .app-container {
     display: grid;
