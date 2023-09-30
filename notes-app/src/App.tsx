@@ -105,6 +105,15 @@ const handleCancel = () => {
   setSelectedNote(null)
 };
 
+// Implement a function to delete a note
+const deleteNote = (event: React.MouseEvent, noteId: number) => {
+  event.stopPropagation();
+
+  const updatedNotes = notes.filter((note) => note.id !== noteId);
+
+  setNotes(updatedNotes);
+};
+
   return (
     <div className="AppContainer">
       <form className="note-form" 
@@ -136,7 +145,7 @@ const handleCancel = () => {
         {notes.map((note) => (
           <div className="note-item" key={note.id} onClick={() => handleNoteClick(note)}>
             <div className="notes-header">
-              <button>x</button>
+              <button onClick={(event) => deleteNote(event, note.id)}>x</button>
             </div>
             <h2>{note.title}</h2>
             <p>{note.content}</p>
