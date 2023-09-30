@@ -107,7 +107,8 @@ const handleCancel = () => {
 
   return (
     <div className="AppContainer">
-      <form className="note-form" onSubmit={handleAddNote}>
+      <form className="note-form" 
+      onSubmit={(event) => (selectedNote ? handleUpdateNote(event) : handleAddNote(event))}>
          {/* Bind the input values to the state variables */}
         <input value={title}
           onChange={(event) => setTitle(event.target.value)}
@@ -121,7 +122,15 @@ const handleCancel = () => {
           rows={10}
           required />
 
+          {selectedNote ? (
+            <div className="edit-buttons">
+              <button type="submit">Save</button>
+              <button onClick={handleCancel}>Cancel</button>
+            </div>
+          ) : (
+
         <button type="submit">Add Note</button>
+          )}
       </form>
       <div className="notes-grid">
         {notes.map((note) => (
