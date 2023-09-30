@@ -12,6 +12,9 @@ type Note = {
 
 const App = () => {
 
+    // Track selected note the user has clicked on
+    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
   // dummy data array for notes with id, title and content
 
   const [notes, setNotes] = useState<Note[]>([
@@ -49,8 +52,6 @@ const App = () => {
   // Handle form submission
   const handleAddNote = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("title: ", title);
-    console.log("content: ", content);
 
 
   // Function to create a new note
@@ -66,6 +67,42 @@ const App = () => {
   // Cleat the form inputs
   setTitle("");
   setContent("");
+};
+
+// Create the click handler that takes a note as an argument
+const handleNoteClick = (note: Note) => {
+  setSelectedNote(note);
+  setTitle(note.title);
+  setContent(note.content);
+};
+
+// Create a function that allows user to edit a note
+const handleUpdateNote = (event: React.FormEvent) => {
+  event.preventDefault();
+
+  if (!selectedNote) {
+    return;
+  }
+
+  const updatedNote: Note = {
+    id: selectedNote.id,
+    title: title,
+    content: content,
+  };
+
+  const updatedNotesList = notes.map((note) => (note.id === selectedNote.id ? updatedNote : note));
+
+  setNotes(updatedNotesList);
+  setTitle("");
+  setContent("");
+  setSelectedNote(null);
+};
+
+// Implement a function to allow the user the reset the form and selected note 
+const handleCancel = () => {
+  setTitle("");
+  setContent("");
+  setSelectedNote(null)
 };
 
   return (
@@ -88,7 +125,7 @@ const App = () => {
       </form>
       <div className="notes-grid">
         {notes.map((note) => (
-          <div className="note-item" key={note.id}>
+          <div className="note-item" key={note.id} onClick={() => handleNoteClick(note)}>
             <div className="notes-header">
               <button>x</button>
             </div>
