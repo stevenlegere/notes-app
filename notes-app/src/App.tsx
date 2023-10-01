@@ -68,21 +68,19 @@ const App = () => {
   const [content, setContent] = useState("");
 
   // Handle form submission
-  const handleAddNote = async (event: React.FormEvent) => {
+  const handleAddNote = async (
+    event: React.FormEvent
+    ) => {
     event.preventDefault();
-
-
     // Function to create a new note
     const newNote: Note = {
       id: notes.length + 1,
       title: title,
       content: content,
     };
-
     // Create a new note in the database
     // Add a try catch block to handle errors
     try {
-
           // Create a new note in the database
     const response = await fetch(
       "http://localhost:5001/api/notes",
@@ -100,7 +98,7 @@ const App = () => {
 
     // Process the response and convert it to JSON
     const note = await response.json();
-    
+
       // Update the state by adding the new note to the beginning of the notes array
       setNotes([newNote, ...notes]);
       // Cleat the form inputs
@@ -148,12 +146,33 @@ const App = () => {
   };
 
   // Implement a function to delete a note
-  const deleteNote = (event: React.MouseEvent, noteId: number) => {
+  const deleteNote = async (
+    event: React.MouseEvent,
+    noteId: number
+    ) => {
     event.stopPropagation();
 
-    const updatedNotes = notes.filter((note) => note.id !== noteId);
+    // Add a try catch block to handle errors
+    try {
 
-    setNotes(updatedNotes);
+      // Make a DELETE request to the server
+      await fetch(
+        `http://localhost:5001/api/notes/${noteId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      // Delete the note from the database
+      const updatedNotes = notes.filter(
+        (note) => note.id !== noteId);
+
+      setNotes(updatedNotes);
+  
+
+    } catch (e) {
+      console.log(e);
+    }
+
   };
 
   return (
