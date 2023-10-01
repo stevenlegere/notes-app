@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Define the Note type
 type Note = {
@@ -12,118 +12,160 @@ type Note = {
 
 const App = () => {
 
-    // Track selected note the user has clicked on
-    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  // Track selected note the user has clicked on
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   // dummy data array for notes with id, title and content
 
   const [notes, setNotes] = useState<Note[]>([
-    {
-      id: 1,
-      title: "test note 1",
-      content: "hello note 1",
-    },
-    {
-      id: 2,
-      title: "test note 2",
-      content: "hello note 2",
-    },
-    {
-      id: 3,
-      title: "test note 3",
-      content: "hello note 3",
-    },
-    {
-      id: 4,
-      title: "test note 4",
-      content: "hello note 4",
-    },
-    {
-      id: 5,
-      title: "test note 5",
-      content: "hello note 5",
-    },
+    // {
+    //   id: 1,
+    //   title: "test note 1",
+    //   content: "hello note 1",
+    // },
+    // {
+    //   id: 2,
+    //   title: "test note 2",
+    //   content: "hello note 2",
+    // },
+    // {
+    //   id: 3,
+    //   title: "test note 3",
+    //   content: "hello note 3",
+    // },
+    // {
+    //   id: 4,
+    //   title: "test note 4",
+    //   content: "hello note 4",
+    // },
+    // {
+    //   id: 5,
+    //   title: "test note 5",
+    //   content: "hello note 5",
+    // },
   ]);
+
+  // useEffect to fetch notes from postgreSQL database
+  useEffect(() => {
+    // Create an async function that fetches the notes from the database
+    const fetchNotes = async () => {
+      // try catch block to handle errors
+      try {
+        const response = await fetch(
+          "http://localhost:5001/api/notes"
+        );
+        const notes: Note[] = await response.json(); // process the response and convert it to JSON
+        setNotes(notes); // update the state with the notes from the database
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchNotes(); // call (invoke) the function
+  }, []); // pass an empty array as the second argument to useEffect to ensure that the effect is only run once
 
   // useState for form input
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   // Handle form submission
-  const handleAddNote = (event: React.FormEvent) => {
+  const handleAddNote = async (event: React.FormEvent) => {
     event.preventDefault();
 
 
-  // Function to create a new note
-  const newNote: Note = {
-    id: notes.length + 1,
-    title: title,
-    content: content,
+    // Function to create a new note
+    const newNote: Note = {
+      id: notes.length + 1,
+      title: title,
+      content: content,
+    };
+
+    // Create a new note in the database
+    // Add a try catch block to handle errors
+    try {
+
+          // Create a new note in the database
+    const response = await fetch(
+      "http://localhost:5001/api/notes",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+        }),
+      }
+    );
+
+    // Process the response and convert it to JSON
+    const note = await response.json();
+    
+      // Update the state by adding the new note to the beginning of the notes array
+      setNotes([newNote, ...notes]);
+      // Cleat the form inputs
+      setTitle("");
+      setContent("");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  // Update the state by adding the new note to the beginning of the notes array
-  setNotes([newNote, ...notes]);
-
-  // Cleat the form inputs
-  setTitle("");
-  setContent("");
-};
-
-// Create the click handler that takes a note as an argument
-const handleNoteClick = (note: Note) => {
-  setSelectedNote(note);
-  setTitle(note.title);
-  setContent(note.content);
-};
-
-// Create a function that allows user to edit a note
-const handleUpdateNote = (event: React.FormEvent) => {
-  event.preventDefault();
-
-  if (!selectedNote) {
-    return;
-  }
-
-  const updatedNote: Note = {
-    id: selectedNote.id,
-    title: title,
-    content: content,
+  // Create the click handler that takes a note as an argument
+  const handleNoteClick = (note: Note) => {
+    setSelectedNote(note);
+    setTitle(note.title);
+    setContent(note.content);
   };
 
-  const updatedNotesList = notes.map((note) => (note.id === selectedNote.id ? updatedNote : note));
+  // Create a function that allows user to edit a note
+  const handleUpdateNote = (event: React.FormEvent) => {
+    event.preventDefault();
 
-  setNotes(updatedNotesList);
-  setTitle("");
-  setContent("");
-  setSelectedNote(null);
-};
+    if (!selectedNote) {
+      return;
+    }
 
-// Implement a function to allow the user the reset the form and selected note 
-const handleCancel = () => {
-  setTitle("");
-  setContent("");
-  setSelectedNote(null)
-};
+    const updatedNote: Note = {
+      id: selectedNote.id,
+      title: title,
+      content: content,
+    };
 
-// Implement a function to delete a note
-const deleteNote = (event: React.MouseEvent, noteId: number) => {
-  event.stopPropagation();
+    const updatedNotesList = notes.map((note) => (note.id === selectedNote.id ? updatedNote : note));
 
-  const updatedNotes = notes.filter((note) => note.id !== noteId);
+    setNotes(updatedNotesList);
+    setTitle("");
+    setContent("");
+    setSelectedNote(null);
+  };
 
-  setNotes(updatedNotes);
-};
+  // Implement a function to allow the user the reset the form and selected note 
+  const handleCancel = () => {
+    setTitle("");
+    setContent("");
+    setSelectedNote(null)
+  };
+
+  // Implement a function to delete a note
+  const deleteNote = (event: React.MouseEvent, noteId: number) => {
+    event.stopPropagation();
+
+    const updatedNotes = notes.filter((note) => note.id !== noteId);
+
+    setNotes(updatedNotes);
+  };
 
   return (
     <div className="AppContainer">
-      <form className="note-form" 
-      onSubmit={(event) => (selectedNote ? handleUpdateNote(event) : handleAddNote(event))}>
-         {/* Bind the input values to the state variables */}
+      <form className="note-form"
+        onSubmit={(event) => (selectedNote ? handleUpdateNote(event) : handleAddNote(event))}>
+        {/* Bind the input values to the state variables */}
         <input value={title}
           onChange={(event) => setTitle(event.target.value)}
           placeholder="Title"
           required />
-            {/* Bind the input values to the state variables */}
+        {/* Bind the input values to the state variables */}
         <textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
@@ -131,15 +173,15 @@ const deleteNote = (event: React.MouseEvent, noteId: number) => {
           rows={10}
           required />
 
-          {selectedNote ? (
-            <div className="edit-buttons">
-              <button type="submit">Save</button>
-              <button onClick={handleCancel}>Cancel</button>
-            </div>
-          ) : (
+        {selectedNote ? (
+          <div className="edit-buttons">
+            <button type="submit">Save</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        ) : (
 
-        <button type="submit">Add Note</button>
-          )}
+          <button type="submit">Add Note</button>
+        )}
       </form>
       <div className="notes-grid">
         {notes.map((note) => (
