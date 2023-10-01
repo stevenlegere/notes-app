@@ -1,19 +1,21 @@
 /* margin to stop the App from touching the edges of the browser window */
 body {
-  margin: 20px;
-  background-color: lightgrey;
+  margin: 0px;
+  padding: 10px;
+  font-family: "Helvetica Neue", sans-serif;
+  background-color: #f7f7f7;
 }
 
 .app-container {
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-/* media query that  for screens bigger than 600px use two-column layout */
+/* media query that for screens bigger than 600px use two-column layout */
 @media (min-width: 600px) {
   .app-container {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 20px;
+    justify-content: flex-start;
   }
 }
 
@@ -25,66 +27,113 @@ body {
   );
   grid-auto-rows: minmax(250px, auto);
   gap: 20px;
+  margin: 20px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .note-item {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #9f9f9f;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0 , 0.1);
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s;
   cursor: pointer;
+  max-width: 300px;
+  
+}
+
+.note-item:hover {
+  transform: tralateY(-5px);
+}
+
+.note-content {
+  padding: 10px;
+  margin: 0 0px;
 }
 
 .notes-header {
   display: flex;
   justify-content: flex-end;
+  padding: 10px;
 }
 
 .notes-header button {
-  font-size: 16px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  max-width: fit-content;
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
+
+.notes-header button:hover {
+  color: #f04a4a;
 }
 
 h2 {
   margin: 0;
+  margin-left: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .note-form {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 10px;
+  min-width: 300px;
+  margin: 0 auto;
 }
 
 textarea,
 input {
   border-radius: 5px;
-  border: 1px solid black;
+  border: 1px solid #ddd;
   padding: 10px;
   font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: #5c7cfa;
+}
+
+.note-form button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  background-color: #5c7cfa;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .note-form button:hover {
-  background-color: rgb(106, 175, 198);
-  cursor: pointer;
+  background-color: #445bb8;
 }
 
 .edit-buttons {
   display: flex;
-  justify-content: space-evenly;
-  gap: 5px;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .edit-buttons button {
-  flex: 1;
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .edit-buttons button:last-of-type {
-  background-color: rgb(220, 89, 89);
+  background-color: #f04a4a;
   color: white;
 }

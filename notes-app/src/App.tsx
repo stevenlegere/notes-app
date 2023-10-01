@@ -176,7 +176,7 @@ const App = () => {
   };
 
   return (
-    <div className="AppContainer">
+    <div className="container">
       <form className="note-form"
         onSubmit={(event) => (selectedNote ? handleUpdateNote(event) : handleAddNote(event))}>
         {/* Bind the input values to the state variables */}
@@ -209,7 +209,9 @@ const App = () => {
               <button onClick={(event) => deleteNote(event, note.id)}>x</button>
             </div>
             <h2>{note.title}</h2>
+            <div className="note-content">
             <p>{note.content}</p>
+            </div>
           </div>
         ))}
       </div>
