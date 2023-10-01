@@ -61,12 +61,16 @@ body {
   display: flex;
   justify-content: flex-end;
   padding: 10px;
+  border: none;
 }
 
 .notes-header button {
   display: flex;
   justify-content: flex-end;
   padding: 5px;
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
 }
 
 .notes-header button:hover {
