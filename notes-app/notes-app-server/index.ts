@@ -12,7 +12,13 @@ const prisma = new PrismaClient({
 }); // create prisma client
 
 app.use(express.json()); // use express json middleware (parses the json body of the request)
-app.use(cors()); // use cors middleware (allows cross origin requests)
+app.use(cors(
+    {
+        origin: ["http://localhost:3000", "https://steves-notes-app.netlify.app/"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+    }
+)); // use cors middleware (allows cross origin requests)
 
 app.get("/api/notes", async (req, res) => {
     const notes = await prisma.note.findMany(); // get all notes from database
