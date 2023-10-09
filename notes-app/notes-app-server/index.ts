@@ -14,7 +14,7 @@ const prisma = new PrismaClient({
 app.use(express.json()); // use express json middleware (parses the json body of the request)
 app.use(cors(
     {
-        origin: ["http://localhost:3000", "https://steves-notes-app.netlify.app/"],
+        origin: ["http://localhost:3000", "https://steves-notes-app.netlify.app"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     }
